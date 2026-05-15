@@ -442,15 +442,15 @@ $$
 where:
 
 $$
-\sigma_{\text{overnight}}^2 = \operatorname{Var}\left(\ln\left(\frac{O_i}{C_{i-1}}\right)\right) \quad \text{// overnight returns}
+\sigma_{\text{overnight}}^2 = \mathrm{Var}\left(\ln\left(\frac{O_i}{C_{i-1}}\right)\right)
 $$
 
 $$
-\sigma_{\text{open-close}}^2 = \operatorname{Var}\left(\ln\left(\frac{C_i}{O_i}\right)\right) \quad \text{// intraday returns}
+\sigma_{\text{open-close}}^2 = \mathrm{Var}\left(\ln\left(\frac{C_i}{O_i}\right)\right)
 $$
 
 $$
-\sigma_{\text{RS}}^2 = \sum \ln\left(\frac{H_i}{L_i}\right) \times \left(\ln\left(\frac{H_i}{L_i}\right) - \ln\left(\frac{C_i}{O_i}\right)\right) \quad \text{// Rogers-Satchell}
+\sigma_{\text{RS}}^2 = \sum \ln\left(\frac{H_i}{L_i}\right) \times \left(\ln\left(\frac{H_i}{L_i}\right) - \ln\left(\frac{C_i}{O_i}\right)\right)
 $$
 
 $$
