@@ -1,0 +1,16 @@
+# MQL5 compiled output
+*.ex5
+*.ex4
+
+# MetaTrader logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
