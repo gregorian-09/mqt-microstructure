@@ -38,15 +38,15 @@ It is organised for three audiences:
 
 The **quoted spread** is the difference between the best ask (lowest sell order) and the best bid (highest buy order):
 
-```
-S_quoted = P_ask - P_bid
-```
+$$
+S_{\text{quoted}} = P_{\text{ask}} - P_{\text{bid}}
+$$
 
 **Relative spread** normalises by the mid-price:
 
-```
-S_rel = (P_ask - P_bid) / P_mid
-```
+$$
+S_{\text{rel}} = \frac{P_{\text{ask}} - P_{\text{bid}}}{P_{\text{mid}}}
+$$
 
 ```
     Bid         Ask
@@ -63,13 +63,17 @@ S_rel = (P_ask - P_bid) / P_mid
 
 The **effective spread** measures the actual cost paid by a trade, accounting for price improvement or degradation:
 
-```
 If trade is a buy (aggressor hits the ask):
-  S_eff = 2 × (P_trade - P_mid) / P_mid
+
+$$
+S_{\text{eff}} = \frac{2 \times (P_{\text{trade}} - P_{\text{mid}})}{P_{\text{mid}}}
+$$
 
 If trade is a sell (aggressor hits the bid):
-  S_eff = 2 × (P_mid - P_trade) / P_mid
-```
+
+$$
+S_{\text{eff}} = \frac{2 \times (P_{\text{mid}} - P_{\text{trade}})}{P_{\text{mid}}}
+$$
 
 The factor of 2 converts a half-spread to a round-trip cost.
 
@@ -81,11 +85,11 @@ The factor of 2 converts a half-spread to a round-trip cost.
 
 The **realised spread** decomposes the effective spread into the revenue earned by the liquidity provider after accounting for adverse price movement:
 
-```
-S_realized = S_eff - 2 × (P_mid(t + n) - P_mid(t)) × direction
-```
+$$
+S_{\text{realized}} = S_{\text{eff}} - 2 \times (P_{\text{mid}}(t + n) - P_{\text{mid}}(t)) \times \text{direction}
+$$
 
-where `n` is the holding period (typically 5 ticks), `t` is the trade time, and `direction` is +1 for buys, -1 for sells.
+where $n$ is the holding period (typically 5 ticks), $t$ is the trade time, and $\text{direction}$ is +1 for buys, -1 for sells.
 
 **Why it matters:** A large realised spread means the market maker earned a profit on the spread. A small or negative realised spread after adjusting for mid-price movement indicates adverse selection — the market maker got picked off.
 
@@ -93,9 +97,9 @@ where `n` is the holding period (typically 5 ticks), `t` is the trade time, and 
 
 ### 1.4 Half-Spread Cost per Share
 
-```
-Cost_half = Average(S_eff) / 2
-```
+$$
+\text{Cost}_{\text{half}} = \frac{\text{Average}(S_{\text{eff}})}{2}
+$$
 
 This is the per-share cost of demanding liquidity, used in execution cost analysis.
 
@@ -107,10 +111,13 @@ This is the per-share cost of demanding liquidity, used in execution cost analys
 
 Depth at a given level or cumulated across levels:
 
-```
-Depth_bid = Σ V_bid[i]   for i = 0 .. N-1
-Depth_ask = Σ V_ask[i]   for i = 0 .. N-1
-```
+$$
+\text{Depth}_{\text{bid}} = \sum_{i=0}^{N-1} V_{\text{bid}}[i]
+$$
+
+$$
+\text{Depth}_{\text{ask}} = \sum_{i=0}^{N-1} V_{\text{ask}}[i]
+$$
 
 where `V[i]` is the volume at the i-th level (0 = best price).
 
@@ -120,9 +127,9 @@ where `V[i]` is the volume at the i-th level (0 = best price).
 
 Signed normalised difference between bid and ask depth:
 
-```
-Imbalance = (Depth_bid - Depth_ask) / (Depth_bid + Depth_ask)
-```
+$$
+\text{Imbalance} = \frac{\text{Depth}_{\text{bid}} - \text{Depth}_{\text{ask}}}{\text{Depth}_{\text{bid}} + \text{Depth}_{\text{ask}}}
+$$
 
 Range: [-1, +1]. Positive = buying pressure, negative = selling pressure.
 
@@ -132,9 +139,9 @@ Range: [-1, +1]. Positive = buying pressure, negative = selling pressure.
 
 Volume-weighted mid-price using depth at the inside:
 
-```
-P_micro = (P_bid × V_ask + P_ask × V_bid) / (V_bid + V_ask)
-```
+$$
+P_{\text{micro}} = \frac{P_{\text{bid}} \times V_{\text{ask}} + P_{\text{ask}} \times V_{\text{bid}}}{V_{\text{bid}} + V_{\text{ask}}}
+$$
 
 The microprice is a more accurate estimate of the "true" price than the mid-price, weighted by the volume available at each side. When the microprice diverges from the mid-price, it signals an imbalance.
 
@@ -142,11 +149,11 @@ The microprice is a more accurate estimate of the "true" price than the mid-pric
 
 ### 2.4 Weighted Average Price (WAP)
 
-The average fill price for a market order of size `Q`:
+The average fill price for a market order of size $Q$:
 
-```
-WAP(Q, side) = (Σ V_filled[i] × P[i]) / Q
-```
+$$
+\text{WAP}(Q, \text{side}) = \frac{\sum V_{\text{filled}}[i] \times P[i]}{Q}
+$$
 
 The algorithm walks the book level by level until the full order is filled:
 
@@ -167,9 +174,9 @@ for level = 0 to N-1:
 
 CVD tracks the net difference between buy-initiated and sell-initiated volume:
 
-```
-CVD(t) = Σ (V_buy[i] - V_sell[i])   for i = 0 .. t
-```
+$$
+\text{CVD}(t) = \sum_{i=0}^{t} (V_{\text{buy}}[i] - V_{\text{sell}}[i])
+$$
 
 Each trade is classified as buy or sell using the flags-first tick rule (see Section 12).
 
@@ -179,9 +186,9 @@ Each trade is classified as buy or sell using the flags-first tick rule (see Sec
 
 ### 3.2 Delta Ratio
 
-```
-DeltaRatio = Delta(lookback) / Volume(lookback)
-```
+$$
+\text{DeltaRatio} = \frac{\text{Delta}(\text{lookback})}{\text{Volume}(\text{lookback})}
+$$
 
 Range: [-1, +1]. Sign indicates direction, magnitude indicates conviction.
 
@@ -189,11 +196,11 @@ Range: [-1, +1]. Sign indicates direction, magnitude indicates conviction.
 
 Standardised recent delta relative to its own distribution:
 
-```
-Z = (Δ_current - μ(Δ)) / σ(Δ)
-```
+$$
+Z = \frac{\Delta_{\text{current}} - \mu(\Delta)}{\sigma(\Delta)}
+$$
 
-where μ and σ are the mean and standard deviation of per-tick deltas over the lookback window. |Z| > 2 is statistically significant.
+where $\mu$ and $\sigma$ are the mean and standard deviation of per-tick deltas over the lookback window. $|Z| > 2$ is statistically significant.
 
 **Implementation:** `CMqtCumulativeVolumeDelta::ZScore(lookback)`.
 
@@ -207,29 +214,29 @@ VPIN estimates the probability that the current volume bucket contains informed 
 
 ### 4.2 Algorithm
 
-1. Divide total volume into equal-sized **buckets** of V_bucket units.
+1. Divide total volume into equal-sized **buckets** of $V_{\text{bucket}}$ units.
 2. Within each bucket, classify each trade as buy or sell.
 3. Compute:
 
-```
-VPIN(bucket) = |V_buy[bucket] - V_sell[bucket]| / V_bucket
-```
+$$
+\text{VPIN}(\text{bucket}) = \frac{|V_{\text{buy}}[\text{bucket}] - V_{\text{sell}}[\text{bucket}]|}{V_{\text{bucket}}}
+$$
 
-4. The reported VPIN is the rolling average over the last `n` buckets:
+4. The reported VPIN is the rolling average over the last $n$ buckets:
 
-```
-VPIN = (1/n) × Σ VPIN(i)   for i = 0 .. n-1
-```
+$$
+\text{VPIN} = \frac{1}{n} \times \sum_{i=0}^{n-1} \text{VPIN}(i)
+$$
 
 ### 4.3 Bucket Sizing
 
-Bucket volume determines sensitivity. If V_bucket is too small, VPIN is noisy. If too large, VPIN is slow.
+Bucket volume determines sensitivity. If $V_{\text{bucket}}$ is too small, VPIN is noisy. If too large, VPIN is slow.
 
 **Adaptive method** (default): Sample N ticks, compute average tick volume, set:
 
-```
-V_bucket = max(avg_tick_vol × buckets × 5, avg_tick_vol × 10)
-```
+$$
+V_{\text{bucket}} = \max(\text{avg\_tick\_vol} \times \text{buckets} \times 5,\ \text{avg\_tick\_vol} \times 10)
+$$
 
 **Historical method**: Use D1 average volume / bucket_count.
 
@@ -243,9 +250,9 @@ V_bucket = max(avg_tick_vol × buckets × 5, avg_tick_vol × 10)
 
 A VPIN z-score > 2 is considered **toxic**:
 
-```
-Z_VPIN = (VPIN_current - μ(VPIN)) / σ(VPIN)
-```
+$$
+Z_{\text{VPIN}} = \frac{\text{VPIN}_{\text{current}} - \mu(\text{VPIN})}{\sigma(\text{VPIN})}
+$$
 
 The original 2012 paper found that the 2010 Flash Crash was preceded by hours of VPIN > 0.7.
 
@@ -257,38 +264,38 @@ The original 2012 paper found that the 2010 Flash Crash was preceded by hours of
 
 ### 5.1 Concept
 
-Kyle's lambda (λ) measures the **price impact per unit of signed order flow**. It is the slope of the regression:
+Kyle's lambda ($\lambda$) measures the **price impact per unit of signed order flow**. It is the slope of the regression:
 
-```
-ΔP = α + λ × Q_signed + ε
-```
+$$
+\Delta P = \alpha + \lambda \times Q_{\text{signed}} + \varepsilon
+$$
 
 where:
-- `ΔP = ln(P_t / P_{t-1})` is the log-return
-- `Q_signed` is the signed volume (+ for buys, - for sells)
-- `λ` is the price impact coefficient (Kyle's lambda)
+- $\Delta P = \ln(P_t / P_{t-1})$ is the log-return
+- $Q_{\text{signed}}$ is the signed volume (+ for buys, - for sells)
+- $\lambda$ is the price impact coefficient (Kyle's lambda)
 
-A high λ means the market is illiquid — a given order causes a large price move.
+A high $\lambda$ means the market is illiquid — a given order causes a large price move.
 
 ### 5.2 OLS Estimation
 
-The regression is estimated via ordinary least squares over a rolling window of `n` observations:
+The regression is estimated via ordinary least squares over a rolling window of $n$ observations:
 
-```
-λ = (Σ (x_i - x̄)(y_i - ȳ)) / (Σ (x_i - x̄)²)
+$$
+\lambda = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}
+$$
 
-where: x_i = Q_signed[i], y_i = ΔP[i]
-```
+where: $x_i = Q_{\text{signed}}[i]$, $y_i = \Delta P[i]$
 
-The R² measures how much of the price variance is explained by order flow:
+The $R^2$ measures how much of the price variance is explained by order flow:
 
-```
-R² = 1 - SS_res / SS_tot
-```
+$$
+R^2 = 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}
+$$
 
 ### 5.3 Throttling
 
-Since OLS is O(n) per tick and callable at tick frequency, the regression is recomputed only every `k` ticks (default: 5). Between recomputations, the last λ is returned.
+Since OLS is O(n) per tick and callable at tick frequency, the regression is recomputed only every $k$ ticks (default: 5). Between recomputations, the last $\lambda$ is returned.
 
 **Implementation:**
 - `CMqtKyleLambda::Add(mid, signedVolume)` — add observation, trigger OLS every k ticks
@@ -304,11 +311,11 @@ Since OLS is O(n) per tick and callable at tick frequency, the regression is rec
 
 The Amihud illiquidity ratio is a non-parametric measure of price impact:
 
-```
-Amihud_i = |R_i| / V_i
-```
+$$
+\text{Amihud}_i = \frac{|R_i|}{V_i}
+$$
 
-where `R_i = ln(P_i / P_{i-1})` is the absolute log-return and `V_i` is the dollar volume for bar `i`.
+where $R_i = \ln(P_i / P_{i-1})$ is the absolute log-return and $V_i$ is the dollar volume for bar $i$.
 
 Higher values indicate **lower liquidity** — the same volume moves price more.
 
@@ -316,10 +323,10 @@ Higher values indicate **lower liquidity** — the same volume moves price more.
 
 | Amihud | Liquidity | Typical for |
 |--------|-----------|-------------|
-| < 1×10⁻⁷ | Highly liquid | Major FX pairs |
-| 1×10⁻⁶ | Liquid | Large-cap equities |
-| 1×10⁻⁵ | Moderate | Small-cap equities |
-| > 1×10⁻⁴ | Illiquid | Emerging market bonds |
+| $< 1 \times 10^{-7}$ | Highly liquid | Major FX pairs |
+| $1 \times 10^{-6}$ | Liquid | Large-cap equities |
+| $1 \times 10^{-5}$ | Moderate | Small-cap equities |
+| $> 1 \times 10^{-4}$ | Illiquid | Emerging market bonds |
 
 **Implementation:** `CMqtAmihudIlliquidity::AddBar(prevPrice, currPrice, volume)`.
 
@@ -331,32 +338,35 @@ Higher values indicate **lower liquidity** — the same volume moves price more.
 
 Hasbrouck (1991) models the joint dynamics of price changes and trade signs using a vector autoregression (VAR):
 
-```
-r_t = α_1 × r_{t-1} + β_1 × x_{t-1} + ε_1,t
-x_t = α_2 × r_{t-1} + β_2 × x_{t-1} + ε_2,t
-```
+$$
+r_t = \alpha_1 \times r_{t-1} + \beta_1 \times x_{t-1} + \varepsilon_{1,t}
+$$
 
-where `r_t` is the price change (log-return) and `x_t` is the trade sign (+1 buy, -1 sell, 0 neutral).
+$$
+x_t = \alpha_2 \times r_{t-1} + \beta_2 \times x_{t-1} + \varepsilon_{2,t}
+$$
+
+where $r_t$ is the price change (log-return) and $x_t$ is the trade sign (+1 buy, -1 sell, 0 neutral).
 
 ### 7.2 Impulse Response
 
 The impulse response function traces the effect of a one-unit trade sign shock on future price changes:
 
-```
-IRF(k) = ∂E[r_{t+k} | x_t = 1] / ∂x_t
-```
+$$
+\text{IRF}(k) = \frac{\partial E[r_{t+k} \mid x_t = 1]}{\partial x_t}
+$$
 
 The **permanent impact** is the cumulative impulse over all lags:
 
-```
-θ_perm = (1/L) × Σ |IRF(k)|   for k = 0 .. L-1
-```
+$$
+\theta_{\text{perm}} = \frac{1}{L} \times \sum_{k=0}^{L-1} |\text{IRF}(k)|
+$$
 
 The **temporary impact** is the deviation of the first lag from the permanent:
 
-```
-θ_temp = |IRF(0) - θ_perm|
-```
+$$
+\theta_{\text{temp}} = |\text{IRF}(0) - \theta_{\text{perm}}|
+$$
 
 **Implementation:** `CMqtHasbrouckImpact::Add(priceChange, tradeSign)`, `::PermanentImpact()`, `::TemporaryImpact()`.
 
@@ -368,28 +378,28 @@ The **temporary impact** is the deviation of the first lag from the permanent:
 
 The Almgren-Chriss model separates impact into permanent and temporary components:
 
-```
-I(Q) = θ_perm × (Q/V)^α + θ_temp × (Q/V)^γ
-```
+$$
+I(Q) = \theta_{\text{perm}} \times \left(\frac{Q}{V}\right)^\alpha + \theta_{\text{temp}} \times \left(\frac{Q}{V}\right)^\gamma
+$$
 
 where:
-- `Q` is the order size
-- `V` is the total volume
-- `α ≈ 0.3` is the permanent impact exponent
-- `γ ≈ 0.6` is the temporary impact exponent
+- $Q$ is the order size
+- $V$ is the total volume
+- $\alpha \approx 0.3$ is the permanent impact exponent
+- $\gamma \approx 0.6$ is the temporary impact exponent
 
 ### 8.2 Optimal Execution
 
 The optimal trading rate that balances impact cost and timing risk:
 
-```
-η* = √(λ × σ² / (2 × θ_temp × T))
-```
+$$
+\eta^* = \sqrt{\frac{\lambda \times \sigma^2}{2 \times \theta_{\text{temp}} \times T}}
+$$
 
 where:
-- `λ` is risk aversion
-- `σ²` is return variance
-- `T` is execution horizon in seconds
+- $\lambda$ is risk aversion
+- $\sigma^2$ is return variance
+- $T$ is execution horizon in seconds
 
 **Implementation:** `CMqtAlmgrenChriss::TotalImpact(orderSize, totalVol)`, `::OptimalTradingRate(riskAversion, totalVol, horizon)`.
 
@@ -399,41 +409,53 @@ where:
 
 ### 9.1 Classic Realised Volatility
 
-```
-RV = √(Σ r_i²)
-```
+$$
+\text{RV} = \sqrt{\sum r_i^2}
+$$
 
-where `r_i = ln(P_i / P_{i-1})` are log-returns over the window.
+where $r_i = \ln(P_i / P_{i-1})$ are log-returns over the window.
 
 ### 9.2 Parkinson Estimator
 
 Uses only high and low prices (efficient when drift is zero):
 
-```
-σ_Parkinson = √( (1/(4 × ln2 × N)) × Σ ln(H_i / L_i)² )
-```
+$$
+\sigma_{\text{Parkinson}} = \sqrt{\frac{1}{4 \times \ln 2 \times N} \times \sum \ln\left(\frac{H_i}{L_i}\right)^2}
+$$
 
 ### 9.3 Garman-Klass Estimator
 
 Uses open, high, low, close (drift-robust):
 
-```
-σ_GK = √( (1/N) × Σ [0.5 × ln(H_i/L_i)² - (2×ln2 - 1) × ln(C_i/O_i)²] )
-```
+$$
+\sigma_{\text{GK}} = \sqrt{\frac{1}{N} \times \sum \left[0.5 \times \ln\left(\frac{H_i}{L_i}\right)^2 - (2 \times \ln 2 - 1) \times \ln\left(\frac{C_i}{O_i}\right)^2\right]}
+$$
 
 ### 9.4 Yang-Zhang Estimator
 
 The most robust — handles drift and opening jumps:
 
-```
-σ_YZ² = σ_overnight² + k × σ_open_close² + (1-k) × σ_RS²
+$$
+\sigma_{\text{YZ}}^2 = \sigma_{\text{overnight}}^2 + k \times \sigma_{\text{open-close}}^2 + (1-k) \times \sigma_{\text{RS}}^2
+$$
 
 where:
-σ_overnight² = Var(ln(O_i / C_{i-1}))      // overnight returns
-σ_open_close² = Var(ln(C_i / O_i))          // intraday returns
-σ_RS² = Σ ln(H_i/L_i) × (ln(H_i/L_i) - ln(C_i/O_i))  // Rogers-Satchell
-k = 0.34 / (1 + (N+1)/(N-1))
-```
+
+$$
+\sigma_{\text{overnight}}^2 = \operatorname{Var}\left(\ln\left(\frac{O_i}{C_{i-1}}\right)\right) \quad \text{// overnight returns}
+$$
+
+$$
+\sigma_{\text{open-close}}^2 = \operatorname{Var}\left(\ln\left(\frac{C_i}{O_i}\right)\right) \quad \text{// intraday returns}
+$$
+
+$$
+\sigma_{\text{RS}}^2 = \sum \ln\left(\frac{H_i}{L_i}\right) \times \left(\ln\left(\frac{H_i}{L_i}\right) - \ln\left(\frac{C_i}{O_i}\right)\right) \quad \text{// Rogers-Satchell}
+$$
+
+$$
+k = \frac{0.34}{1 + \frac{N+1}{N-1}}
+$$
 
 **Implementation:**
 - `CMqtRealizedVolatility::ComputeFromPrices(prices[], n)` — classic RV
@@ -449,17 +471,17 @@ k = 0.34 / (1 + (N+1)/(N-1))
 
 Microstructure noise (bid-ask bounce, tick-size effects) inflates RV at high frequencies. A simple estimator uses the difference between RV at lag 1 and lag 2:
 
-```
-σ_noise² = (RV₁ - RV₂ / 2) / 2
-```
+$$
+\sigma_{\text{noise}}^2 = \frac{\text{RV}_1 - \frac{\text{RV}_2}{2}}{2}
+$$
 
-where `RV_k` is realised vol computed at k-tick sampling.
+where $\text{RV}_k$ is realised vol computed at k-tick sampling.
 
 ### 10.2 Signal-to-Noise Ratio
 
-```
-SNR = 1 / σ_noise²
-```
+$$
+\text{SNR} = \frac{1}{\sigma_{\text{noise}}^2}
+$$
 
 High SNR means the observed price changes are mostly information, not noise.
 
@@ -473,17 +495,17 @@ High SNR means the observed price changes are mostly information, not noise.
 
 The volatility signature plot shows RV computed at every sampling lag from 1 to L:
 
-```
-Signature(lag) = RV at lags ticks per sample
-```
+$$
+\text{Signature}(\text{lag}) = \text{RV at } \text{lag} \text{ ticks per sample}
+$$
 
 At very high frequencies, RV is inflated by noise. As the lag increases, RV converges to the "true" volatility. The **optimal sampling frequency** is the smallest lag where the RV curve flattens.
 
 ### 11.2 Noise from Signature
 
-```
-σ_noise² = (Signature(1)² - Signature(2)²) / 2
-```
+$$
+\sigma_{\text{noise}}^2 = \frac{\text{Signature}(1)^2 - \text{Signature}(2)^2}{2}
+$$
 
 **Implementation:** `CMqtVolatilitySignature::Compute(prices[], n)`, `::OptimalSamplingFrequency()`.
 
@@ -569,15 +591,17 @@ Flags always override consensus when available.
 
 Duration between consecutive trades:
 
-```
-d_i = (t_i - t_{i-1})  in milliseconds, converted to seconds
-```
+$$
+d_i = t_i - t_{i-1}
+$$
+
+in milliseconds, converted to seconds.
 
 Key statistics:
-- **Mean duration:** `μ_d = (1/N) × Σ d_i`
-- **Std deviation:** `σ_d = √((1/(N-1)) × Σ (d_i - μ_d)²)`
-- **Trade intensity:** `λ = 1 / μ_d` (trades per second)
-- **Overdispersion:** `σ_d² / μ_d` — > 1 indicates clustering
+- **Mean duration:** $\mu_d = \frac{1}{N} \times \sum d_i$
+- **Std deviation:** $\sigma_d = \sqrt{\frac{1}{N-1} \times \sum (d_i - \mu_d)^2}$
+- **Trade intensity:** $\lambda = \frac{1}{\mu_d}$ (trades per second)
+- **Overdispersion:** $\sigma_d^2 / \mu_d$ — > 1 indicates clustering
 
 **Implementation:** `CMqtTradeDuration::AddTrade(time_msc)`, `::AverageDuration()`, `::TradeIntensity()`, `::OverdispersionRatio()`.
 
@@ -585,19 +609,19 @@ Key statistics:
 
 The ACD(1,1) model captures duration clustering:
 
-```
-ψ_i = ω + α × d_{i-1} + β × ψ_{i-1}
-```
+$$
+\psi_i = \omega + \alpha \times d_{i-1} + \beta \times \psi_{i-1}
+$$
 
-where `ψ_i` is the conditional expected duration given past durations.
+where $\psi_i$ is the conditional expected duration given past durations.
 
-**Standardised residuals:** `ε_i = d_i / ψ_i` should be i.i.d. with mean 1 if the model is correctly specified.
+**Standardised residuals:** $\varepsilon_i = d_i / \psi_i$ should be i.i.d. with mean 1 if the model is correctly specified.
 
-**MLE estimation** uses a grid search over 0 < α, β < 1 with α + β < 1:
+**MLE estimation** uses a grid search over $0 < \alpha, \beta < 1$ with $\alpha + \beta < 1$:
 
-```
-LL = -Σ (ln(ψ_i) + d_i / ψ_i)
-```
+$$
+\text{LL} = -\sum \left(\ln(\psi_i) + \frac{d_i}{\psi_i}\right)
+$$
 
 **Implementation:**
 - `CMqtACDModel::Estimate(duration)` — on-line filtering
@@ -611,31 +635,46 @@ LL = -Σ (ln(ψ_i) + d_i / ψ_i)
 
 The quoted spread is decomposed into three components:
 
-```
-S_quoted = 2 × (AS + IC + OPC)
+$$
+S_{\text{quoted}} = 2 \times (\text{AS} + \text{IC} + \text{OPC})
+$$
 
 where:
-AS = Adverse Selection component (informed trading cost)
-IC = Inventory component (holding cost)
-OPC = Order Processing component (fixed per-trade cost)
+- AS = Adverse Selection component (informed trading cost)
+- IC = Inventory component (holding cost)
+- OPC = Order Processing component (fixed per-trade cost)
 
-Effective spread:  S_eff = 2 × (AS + OPC)
-Realised spread:   S_rlz = 2 × OPC
-```
+Effective spread:
+
+$$
+S_{\text{eff}} = 2 \times (\text{AS} + \text{OPC})
+$$
+
+Realised spread:
+
+$$
+S_{\text{rlz}} = 2 \times \text{OPC}
+$$
 
 From these, the components are:
 
-```
-AS = (S_eff - S_rlz) / 2
-OPC = S_rlz / 2
-IC = (S_quoted - 2 × S_eff) / 2   (if positive, else 0)
-```
+$$
+\text{AS} = \frac{S_{\text{eff}} - S_{\text{rlz}}}{2}
+$$
+
+$$
+\text{OPC} = \frac{S_{\text{rlz}}}{2}
+$$
+
+$$
+\text{IC} = \frac{S_{\text{quoted}} - 2 \times S_{\text{eff}}}{2} \quad (\text{if positive, else } 0)
+$$
 
 **Probability of Informed Trading (PIN):**
 
-```
-PIN = AS / (AS + OPC)
-```
+$$
+\text{PIN} = \frac{\text{AS}}{\text{AS} + \text{OPC}}
+$$
 
 ### 14.2 Implementation
 
@@ -679,17 +718,17 @@ else → Normal
 
 **Book resiliency** measures how fast the order book recovers after a trade consumes liquidity:
 
-```
-R = 1 / T_recovery
-```
+$$
+R = \frac{1}{T_{\text{recovery}}}
+$$
 
-where `T_recovery` is the time in milliseconds for the book depth to return to 95% of its pre-trade level.
+where $T_{\text{recovery}}$ is the time in milliseconds for the book depth to return to 95% of its pre-trade level.
 
 ### 16.2 Depth Elasticity
 
-```
-Elasticity = Depth_pre_trade / T_recovery (avg)
-```
+$$
+\text{Elasticity} = \frac{\text{Depth}_{\text{pre-trade}}}{T_{\text{recovery}}}
+$$
 
 Higher elasticity means the book has more "spring" — it absorbs trades and recovers quickly.
 
@@ -714,57 +753,62 @@ Higher elasticity means the book has more "spring" — it absorbs trades and rec
 
 ### 17.1 Price Bins
 
-Volume is partitioned into `N` equally-spaced price bins:
+Volume is partitioned into $N$ equally-spaced price bins:
 
-```
-Bin_k = [P_min + k × ΔP, P_min + (k+1) × ΔP)
+$$
+\text{Bin}_k = [P_{\min} + k \times \Delta P,\ P_{\min} + (k+1) \times \Delta P)
+$$
 
-where ΔP = (P_max - P_min) / N
-```
+where $\Delta P = \frac{P_{\max} - P_{\min}}{N}$
 
 ### 17.2 Point of Control (POC)
 
 The bin with the highest volume:
 
-```
-POC = argmax_k V_k
-```
+$$
+\text{POC} = \arg\max_k V_k
+$$
 
 ### 17.3 Value Area
 
 The price range containing a specified percentage (typically 70%) of total volume. Starting from the POC, bins are added outward until the cumulative volume reaches the threshold:
 
-```
-VA_low = P_min + low_bin × ΔP
-VA_high = P_min + (high_bin + 1) × ΔP
-```
+$$
+VA_{\text{low}} = P_{\min} + \text{low\_bin} \times \Delta P
+$$
+
+$$
+VA_{\text{high}} = P_{\min} + (\text{high\_bin} + 1) \times \Delta P
+$$
 
 ### 17.4 VWAP per Bin
 
-```
-VWAP_k = (Σ price_i × volume_i) / V_k   for all trades in bin k
-```
+$$
+\text{VWAP}_k = \frac{\sum \text{price}_i \times \text{volume}_i}{V_k}
+$$
+
+for all trades in bin $k$.
 
 ### 17.5 Entropy
 
 Normalised entropy measures how evenly volume is distributed across bins:
 
-```
-H = -(1 / ln N) × Σ p_k × ln(p_k)
+$$
+H = -\frac{1}{\ln N} \times \sum p_k \times \ln(p_k)
+$$
 
-where p_k = V_k / V_total
-```
+where $p_k = \frac{V_k}{V_{\text{total}}}$
 
-H → 1: volume evenly distributed (liquid market, no single fair price)  
-H → 0: all volume at one price (perfect agreement on fair value)
+$H \to 1$: volume evenly distributed (liquid market, no single fair price)  
+$H \to 0$: all volume at one price (perfect agreement on fair value)
 
 ### 17.6 Skew
 
 Volume-weighted skewness measures asymmetry:
 
-```
-Skew = (1 / V_total × Σ V_k × (mid_k - VWAP)³) / σ³
-```
+$$
+\text{Skew} = \frac{\frac{1}{V_{\text{total}}} \times \sum V_k \times (\text{mid}_k - \text{VWAP})^3}{\sigma^3}
+$$
 
 Positive skew = more volume at higher prices (bullish tail).
 
@@ -778,11 +822,11 @@ Positive skew = more volume at higher prices (bullish tail).
 
 Information share measures the proportion of permanent price variance attributable to a given market or order flow source:
 
-```
-IS_perm = θ_perm / (θ_perm + θ_temp)
-```
+$$
+\text{IS}_{\text{perm}} = \frac{\theta_{\text{perm}}}{\theta_{\text{perm}} + \theta_{\text{temp}}}
+$$
 
-where `θ_perm` is the permanent impact component and `θ_temp` is the temporary component from the VAR impulse response (Section 7).
+where $\theta_{\text{perm}}$ is the permanent impact component and $\theta_{\text{temp}}$ is the temporary component from the VAR impulse response (Section 7).
 
 ### 18.2 Interpretation
 
