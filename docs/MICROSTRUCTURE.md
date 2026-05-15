@@ -235,11 +235,11 @@ Bucket volume determines sensitivity. If $V_{\text{bucket}}$ is too small, VPIN 
 **Adaptive method** (default): Sample N ticks, compute average tick volume, set:
 
 $$
-V_{\text{bucket}} =
-\max\left(
-\mathrm{avg\_tick\_vol} \times \mathrm{buckets} \times 5,\;
-\mathrm{avg\_tick\_vol} \times 10
-\right)
+V_{\mathrm{bucket}} =
+\max\Big(
+\mathrm{avg}_{\mathrm{tick\_vol}} \times \mathrm{buckets} \times 5,\;
+\mathrm{avg}_{\mathrm{tick\_vol}} \times 10
+\Big)
 $$
 
 **Historical method**: Use D1 average volume / bucket_count.
