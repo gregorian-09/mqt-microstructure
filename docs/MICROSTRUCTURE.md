@@ -237,8 +237,8 @@ Bucket volume determines sensitivity. If $V_{\text{bucket}}$ is too small, VPIN 
 $$
 V_{\text{bucket}} =
 \max\left(
-\text{avg}_{\text{tick\_vol}} \times \text{buckets} \times 5,\;
-\text{avg}_{\text{tick\_vol}} \times 10
+\mathrm{avg\_tick\_vol} \times \mathrm{buckets} \times 5,\;
+\mathrm{avg\_tick\_vol} \times 10
 \right)
 $$
 
