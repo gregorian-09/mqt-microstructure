@@ -235,7 +235,7 @@ Bucket volume determines sensitivity. If $V_{\text{bucket}}$ is too small, VPIN 
 **Adaptive method** (default): Sample N ticks, compute average tick volume, set:
 
 $$
-V_{\text{bucket}} = \max(\text{avg_tick_vol} \times \text{buckets} \times 5,\ \text{avg_tick_vol} \times 10)
+V_{\text{bucket}} = \max(\mathrm{avg\_tick\_vol} \times \text{buckets} \times 5,\ \mathrm{avg\_tick\_vol} \times 10)
 $$
 
 **Historical method**: Use D1 average volume / bucket_count.
@@ -774,11 +774,11 @@ $$
 The price range containing a specified percentage (typically 70%) of total volume. Starting from the POC, bins are added outward until the cumulative volume reaches the threshold:
 
 $$
-VA_{\text{low}} = P_{\min} + \text{low_bin} \times \Delta P
+VA_{\text{low}} = P_{\min} + \mathrm{low\_bin} \times \Delta P
 $$
 
 $$
-VA_{\text{high}} = P_{\min} + (\text{high_bin} + 1) \times \Delta P
+VA_{\text{high}} = P_{\min} + (\mathrm{high\_bin} + 1) \times \Delta P
 $$
 
 ### 17.4 VWAP per Bin
