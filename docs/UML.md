@@ -343,42 +343,42 @@ sequenceDiagram
 ## Package Diagram
 
 ```mermaid
-packages
-    package "Microstructure Library" {
-        package "Collectors" {
-            CMqtTickCollector
-            CMqtQuoteCollector
-            CMqtTradeCollector
-            CMqtOrderBookCollector
-        }
-        package "Analyzers" {
-            CMqtSpreadAnalyzer
-            CMqtDepthAnalyzer
-            CMqtCumulativeVolumeDelta
-            CMqtOrderFlowImbalance
-            CMqtVPIN
-            CMqtKyleLambda
-            CMqtAmihudIlliquidity
-            CMqtRealizedVolatility
-            CMqtMicrostructureNoise
-            CMqtTradeDuration
-            CMqtACDModel
-            CMqtLeeReady
-            CMqtTickRule
-        }
-        package "Models" {
-            CMqtMarketMakerModel
-            CMqtMicrostructureScore
-            CMqtRegimeDetector
-            CMqtBookResiliency
-            CMqtVolumeProfile
-            CMqtHasbrouckInfoShare
-        }
-        package "Infrastructure" {
-            CMqtEventCoordinator
-            CMqtFileSerializer
-            CMqtHistoryPlayer
-            CMqtTickAggregator
-        }
-    }
+flowchart TB
+    subgraph Microstructure["Microstructure Library"]
+        subgraph Collectors["Collectors"]
+            TC[CMqtTickCollector]
+            QC[CMqtQuoteCollector]
+            TRC[CMqtTradeCollector]
+            BC[CMqtOrderBookCollector]
+        end
+        subgraph Analyzers["Analyzers"]
+            SA[CMqtSpreadAnalyzer]
+            DA[CMqtDepthAnalyzer]
+            CVD[CMqtCumulativeVolumeDelta]
+            OFI[CMqtOrderFlowImbalance]
+            VP[CMqtVPIN]
+            KL[CMqtKyleLambda]
+            AI[CMqtAmihudIlliquidity]
+            RV[CMqtRealizedVolatility]
+            MN[CMqtMicrostructureNoise]
+            TD[CMqtTradeDuration]
+            ACD[CMqtACDModel]
+            LR[CMqtLeeReady]
+            TR[CMqtTickRule]
+        end
+        subgraph Models["Models"]
+            MM[CMqtMarketMakerModel]
+            MS[CMqtMicrostructureScore]
+            RD[CMqtRegimeDetector]
+            BR[CMqtBookResiliency]
+            VPr[CMqtVolumeProfile]
+            IS[CMqtHasbrouckInfoShare]
+        end
+        subgraph Infrastructure["Infrastructure"]
+            EC[CMqtEventCoordinator]
+            FS[CMqtFileSerializer]
+            HP[CMqtHistoryPlayer]
+            TA[CMqtTickAggregator]
+        end
+    end
 ```
