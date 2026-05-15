@@ -1,7 +1,7 @@
 # MQT — Market Microstructure Analysis Library for MQL5
 
 A comprehensive, production-grade market microstructure analysis library for MetaTrader 5.  
-**7,387 lines · 18 modules · 28+ classes** covering tick-level data collection, liquidity analysis, order flow, price impact, volatility estimation, trade classification, duration modelling, and advanced microstructure models.
+Covers tick-level data collection, liquidity analysis, order flow, price impact, volatility estimation, trade classification, duration modelling, and advanced microstructure models.
 
 ---
 

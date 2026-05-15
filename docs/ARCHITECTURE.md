@@ -234,7 +234,7 @@ Module selection:
 ```mermaid
 flowchart LR
     CFG[MqtConfig.active_modules]
-    CFG --> FLAGS[MQT_MODULE_TICK_COLLECTOR | MQT_MODULE_KYLE | ...]
+    CFG --> FLAGS["MQT_MODULE_TICK_COLLECTOR | MQT_MODULE_KYLE | ..."]
 
     FLAGS --> AND{bitwise AND}
     AND -->|nonzero| INIT[Module initialised]
